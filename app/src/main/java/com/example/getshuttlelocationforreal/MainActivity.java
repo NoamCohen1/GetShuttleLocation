@@ -80,4 +80,8 @@ public class MainActivity extends AppCompatActivity {
         myRef = db.getReference("3");
         myRef.setValue(Double.toString(latitude) + ", " + Double.toString(longitude) +", true");
     }
+
+   /* public boolean active(double latitude, double longitude) {
+
+    }*/
 }

@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.getshuttlelocationforreal.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 //import com.google.android.gms.location.FusedLocationProviderClient;
 //import com.google.android.gms.location.LocationServices;
@@ -23,6 +25,7 @@ import com.example.getshuttlelocationforreal.R;
 
 public class MainActivity extends AppCompatActivity {
 
+    DatabaseReference myRef;
     //private FusedLocationProviderClient client;
 
     private void checkPermission() {
@@ -41,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(android.location.Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
+
+                writeToDB(latitude, longitude);
+
                 String msg = "New Latitude2: " + latitude + " New Longitude2: " + longitude;
                 System.out.println(msg);
 
@@ -67,5 +73,11 @@ public class MainActivity extends AppCompatActivity {
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+    }
+
+    public void writeToDB(double latitude, double longitude) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        myRef = db.getReference("3");
+        myRef.setValue(Double.toString(latitude) + ", " + Double.toString(longitude) +", true");
     }
 }

@@ -1,4 +1,4 @@
-package com.example.shuttland;
+package com.example.getshuttlelocationforreal;
 
 import org.junit.Test;
 

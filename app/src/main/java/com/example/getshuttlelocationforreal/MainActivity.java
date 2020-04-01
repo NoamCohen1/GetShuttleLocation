@@ -9,7 +9,19 @@ import android.location.LocationManager;
 //import android.support.v4.app.ActivityCompat;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.Toast;
+
+//////////
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+
+import java.util.ArrayList;
+///////////
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -23,7 +35,27 @@ import com.google.firebase.database.FirebaseDatabase;
 //import com.google.android.gms.tasks.OnSuccessListener;
 //import com.google.android.gms.tasks.Task;
 
+import java.lang.Math;
+
+import static java.lang.Math.pow;
+
 public class MainActivity extends AppCompatActivity {
+
+    //private static final double FIRST_STOP_LAT = 32.0727493;
+    //private static final double FIRST_STOP_LON = 34.849301;
+    //private static final double LAST_STOP_LAT = 32.072267499999995;
+    //private static final double LAST_STOP_LON = 34.8480397;
+    //31.786266,35.297893
+    // "31.786342667022506, 35.29741737647691" - laurens house
+    // 31.78626115987331, 35.29813167304606 - by the compyter in my room
+    // 31.786476,35.298171 - tree trunk - station 0
+    // 31.786442,35.297228 - krak - statiom 1
+    private static final double FIRST_STOP_LAT = 31.786442;
+    private static final double FIRST_STOP_LON = 35.297228 ;
+    private static final double LAST_STOP_LAT = 31.786476;
+    private static final double LAST_STOP_LON = 35.298171;
+    private static final double SQUARED_RADIOS = 0.000000000673;
+    private Boolean status = false;
 
     DatabaseReference myRef;
     //private FusedLocationProviderClient client;
@@ -38,6 +70,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         checkPermission();
         //client = LocationServices.getFusedLocationProviderClient(this);
+
+        //EditText mFullName = findViewById(R.id.et_name);
+
+        ViewPager viewPager = findViewById(R.id.viewPager);
+
+//        AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
+//        pagerAdapter.addFragmet(new LoginFragment());
+//        pagerAdapter.addFragmet(new RegisterFragment());
+//        viewPager.setAdapter(pagerAdapter);
+
 
         final LocationListener locationListener = new LocationListener() {
             @Override
@@ -72,16 +114,58 @@ public class MainActivity extends AppCompatActivity {
         };
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 100, locationListener);
+    }
+
+    /* updating the status of the shuttle.
+    checking weather the shuttle came in close proximity of the last stop
+    or if the shuttle left the proximity of the first stop
+    the radios that was chosen was - 5m (hopefully that's correct)
+    */
+    public void updateStatus(double latitude, double longitude) {
+        // using d^2 < r^2 to determine if the shuttle is in the surrounding of the station
+        //Boolean inCircle = ;
+        // came to last stop
+        if (this.status && (pow(latitude - LAST_STOP_LAT,2) + pow(longitude - LAST_STOP_LON,2) <= SQUARED_RADIOS)) {
+            this.status = false;
+            return;
+        }
+        //inCircle =  pow(latitude - FIRST_STOP_LAT,2) + pow(longitude - FIRST_STOP_LON,2) <= SQUARED_RADIOS;
+        // leaving first stop
+        else if (!this.status && (pow(latitude - FIRST_STOP_LAT,2) + pow(longitude - FIRST_STOP_LON,2) <= SQUARED_RADIOS)) {
+            this.status = true;
+        }
     }
 
     public void writeToDB(double latitude, double longitude) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         myRef = db.getReference("3");
-        myRef.setValue(Double.toString(latitude) + ", " + Double.toString(longitude) +", true");
+        myRef.setValue(Double.toString(latitude) + ", " + Double.toString(longitude) +", " + Boolean.toString(status));
     }
 
    /* public boolean active(double latitude, double longitude) {
 
     }*/
+
+    class AuthenticationPagerAdapter extends FragmentPagerAdapter {
+        private ArrayList<Fragment> fragmentList = new ArrayList<>();
+
+        public AuthenticationPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int i) {
+            return fragmentList.get(i);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        void addFragmet(Fragment fragment) {
+            fragmentList.add(fragment);
+        }
+    }
 }

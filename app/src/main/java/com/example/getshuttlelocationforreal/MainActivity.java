@@ -12,6 +12,11 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+import android.view.View;
+import com.google.firebase.auth.FirebaseAuth;
+import android.content.Intent;
+
 //////////
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -114,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
         };
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
+        float f = (float) 0.5;
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, f, locationListener);
     }
 
     /* updating the status of the shuttle.
@@ -168,4 +174,10 @@ public class MainActivity extends AppCompatActivity {
 //            fragmentList.add(fragment);
 //        }
 //    }
+
+    public void logout(View view) {
+        FirebaseAuth.getInstance().signOut();//logout
+        startActivity(new Intent(getApplicationContext(),LoginActivity.class));
+        finish();
+    }
 }

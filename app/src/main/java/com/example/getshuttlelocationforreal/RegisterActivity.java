@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
         mPassword   = findViewById(R.id.et_password);
         mRePassword = findViewById(R.id.et_repassword);
         mRegisterBtn= findViewById(R.id.btn_register);
-        //mLoginBtn   = findViewById(R.id.swipeLeft);
+        mLoginBtn   = findViewById(R.id.createText);
 
         fAuth = FirebaseAuth.getInstance();
         fStore = FirebaseFirestore.getInstance();
@@ -65,16 +65,22 @@ public class RegisterActivity extends AppCompatActivity {
         mRegisterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String fullName = mFullName.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
+                final String fullName = mFullName.getText().toString().trim() + "@email.com";
+                String password = mPassword.getText().toString().trim() + "11111";
+                String repassword = mRePassword.getText().toString().trim() + "11111";
 
                 if(TextUtils.isEmpty(fullName)){
-                    mFullName.setError("Name is Required.");
+                    mFullName.setError("Full name is Required.");
                     return;
                 }
 
                 if(TextUtils.isEmpty(password)){
                     mPassword.setError("Password is Required.");
+                    return;
+                }
+
+                if(!password.equals(repassword)){
+                    mRePassword.setError("RePassword doesn't match password.");
                     return;
                 }
 

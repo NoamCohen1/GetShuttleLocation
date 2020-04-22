@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">GetShuttleLocation</string>
+    <string name="app_name">Get Shuttle Location</string>
+    <string name="welcome">Welcome Bitches!</string>
+    <string name="logout">Logout bitch.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

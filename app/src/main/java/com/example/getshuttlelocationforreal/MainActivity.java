@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         };
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 100, locationListener);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
     }
 
     /* updating the status of the shuttle.
@@ -146,26 +146,26 @@ public class MainActivity extends AppCompatActivity {
    /* public boolean active(double latitude, double longitude) {
 
     }*/
-
-    class AuthenticationPagerAdapter extends FragmentPagerAdapter {
-        private ArrayList<Fragment> fragmentList = new ArrayList<>();
-
-        public AuthenticationPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int i) {
-            return fragmentList.get(i);
-        }
-
-        @Override
-        public int getCount() {
-            return fragmentList.size();
-        }
-
-        void addFragmet(Fragment fragment) {
-            fragmentList.add(fragment);
-        }
-    }
+//
+//    class AuthenticationPagerAdapter extends FragmentPagerAdapter {
+//        private ArrayList<Fragment> fragmentList = new ArrayList<>();
+//
+//        public AuthenticationPagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int i) {
+//            return fragmentList.get(i);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return fragmentList.size();
+//        }
+//
+//        void addFragmet(Fragment fragment) {
+//            fragmentList.add(fragment);
+//        }
+//    }
 }

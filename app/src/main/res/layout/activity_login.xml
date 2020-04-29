@@ -96,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="New here?  Create account before the shuttle leaves."
+        android:text="New here?  Create account for your shuttle now :)"
         android:textColor="#5F5C60"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

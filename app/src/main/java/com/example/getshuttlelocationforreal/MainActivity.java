@@ -2,6 +2,7 @@ package com.example.getshuttlelocationforreal;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.IntentSender;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -10,14 +11,26 @@ import android.location.LocationManager;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
 import android.view.View;
+
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import android.content.Intent;
 
 //////////
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -32,6 +45,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.getshuttlelocationforreal.R;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -45,6 +59,15 @@ import java.lang.Math;
 import static java.lang.Math.pow;
 
 public class MainActivity extends AppCompatActivity {
+    LocationRequest locationRequest;
+    protected void createLocationRequest() {
+        locationRequest = LocationRequest.create();
+        //locationRequest.setInterval(10000);
+        //locationRequest.setFastestInterval(5000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    String numOfShuttle;
 
     //private static final double FIRST_STOP_LAT = 32.0727493;
     //private static final double FIRST_STOP_LON = 34.849301;
@@ -55,11 +78,21 @@ public class MainActivity extends AppCompatActivity {
     // 31.78626115987331, 35.29813167304606 - by the compyter in my room
     // 31.786476,35.298171 - tree trunk - station 0
     // 31.786442,35.297228 - krak - statiom 1
-    private static final double FIRST_STOP_LAT = 31.786442;
-    private static final double FIRST_STOP_LON = 35.297228 ;
-    private static final double LAST_STOP_LAT = 31.786476;
-    private static final double LAST_STOP_LON = 35.298171;
-    private static final double SQUARED_RADIOS = 0.000000000673;
+
+    // jennie's house
+//    private static final double FIRST_STOP_LAT = 31.786442;
+//    private static final double FIRST_STOP_LON = 35.297228 ;
+//    private static final double LAST_STOP_LAT = 31.786476;
+//    private static final double LAST_STOP_LON = 35.298171;
+//    private static final double SQUARED_RADIOS = 0.000000000673;
+//    private Boolean status = false;
+
+    // noam's house
+    private static final double FIRST_STOP_LAT = 32.078324;
+    private static final double FIRST_STOP_LON = 34.848392 ;
+    private static final double LAST_STOP_LAT = 32.078230;
+    private static final double LAST_STOP_LON = 34.849451;
+    private static final double SQUARED_RADIOS = 0.000000004038;
     private Boolean status = false;
 
     DatabaseReference myRef;
@@ -80,6 +113,18 @@ public class MainActivity extends AppCompatActivity {
 
         ViewPager viewPager = findViewById(R.id.viewPager);
 
+        TextView text = (TextView)findViewById(R.id.text);
+
+//        Intent intent = getIntent();
+//        numOfShuttle = intent.getStringExtra("NumOfShuttle");
+//        text.setText(numOfShuttle);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String emailOfShuttle = user.getEmail();
+            numOfShuttle = emailOfShuttle.split("@")[0];
+        } else {
+// No user is signed in.
+        }
 //        AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
 //        pagerAdapter.addFragmet(new LoginFragment());
 //        pagerAdapter.addFragmet(new RegisterFragment());
@@ -120,6 +165,41 @@ public class MainActivity extends AppCompatActivity {
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         float f = (float) 0.5;
+
+        createLocationRequest();
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+        SettingsClient client = LocationServices.getSettingsClient(this);
+        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+            @Override
+            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                // All location settings are satisfied. The client can initialize
+                // location requests here.
+                // ...
+                //locationSettingsResponse.getLocationSettingsStates().
+            }
+        });
+
+        task.addOnFailureListener(this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if (e instanceof ResolvableApiException) {
+                    // Location settings are not satisfied, but this can be fixed
+                    // by showing the user a dialog.
+                    try {
+                        // Show the dialog by calling startResolutionForResult(),
+                        // and check the result in onActivityResult().
+                        ResolvableApiException resolvable = (ResolvableApiException) e;
+                        // REQUEST_CHECK_SETTINGS = 1
+                        resolvable.startResolutionForResult(MainActivity.this, 1);
+                    } catch (IntentSender.SendIntentException sendEx) {
+                        // Ignore the error.
+                    }
+                }
+            }
+        });
+
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, f, locationListener);
     }
 
@@ -145,35 +225,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void writeToDB(double latitude, double longitude) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
-        myRef = db.getReference("3");
+
+        myRef = db.getReference(numOfShuttle);
         myRef.setValue(Double.toString(latitude) + ", " + Double.toString(longitude) +", " + Boolean.toString(status));
     }
 
    /* public boolean active(double latitude, double longitude) {
 
     }*/
-//
-//    class AuthenticationPagerAdapter extends FragmentPagerAdapter {
-//        private ArrayList<Fragment> fragmentList = new ArrayList<>();
-//
-//        public AuthenticationPagerAdapter(FragmentManager fm) {
-//            super(fm);
-//        }
-//
-//        @Override
-//        public Fragment getItem(int i) {
-//            return fragmentList.get(i);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return fragmentList.size();
-//        }
-//
-//        void addFragmet(Fragment fragment) {
-//            fragmentList.add(fragment);
-//        }
-//    }
 
     public void logout(View view) {
         FirebaseAuth.getInstance().signOut();//logout

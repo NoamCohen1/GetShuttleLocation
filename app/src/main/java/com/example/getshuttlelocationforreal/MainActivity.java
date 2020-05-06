@@ -88,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
 //    private Boolean status = false;
 
     // noam's house
-    private static final double FIRST_STOP_LAT = 32.078324;
-    private static final double FIRST_STOP_LON = 34.848392 ;
-    private static final double LAST_STOP_LAT = 32.078230;
-    private static final double LAST_STOP_LON = 34.849451;
-    private static final double SQUARED_RADIOS = 0.000000004038;
+    private static final double FIRST_STOP_LAT = 32.0782038529416;
+    private static final double FIRST_STOP_LON = 34.84960211717887;
+    private static final double LAST_STOP_LAT = 32.07831045222022;
+    private static final double LAST_STOP_LON = 34.84849725022398;
+    private static final double SQUARED_RADIOS = 0.000000104329;
     private Boolean status = false;
 
     DatabaseReference myRef;
@@ -165,42 +165,42 @@ public class MainActivity extends AppCompatActivity {
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         float f = (float) 0.5;
-
-        createLocationRequest();
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-        SettingsClient client = LocationServices.getSettingsClient(this);
-        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
-        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-            @Override
-            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                // All location settings are satisfied. The client can initialize
-                // location requests here.
-                // ...
-                //locationSettingsResponse.getLocationSettingsStates().
-            }
-        });
-
-        task.addOnFailureListener(this, new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                if (e instanceof ResolvableApiException) {
-                    // Location settings are not satisfied, but this can be fixed
-                    // by showing the user a dialog.
-                    try {
-                        // Show the dialog by calling startResolutionForResult(),
-                        // and check the result in onActivityResult().
-                        ResolvableApiException resolvable = (ResolvableApiException) e;
-                        // REQUEST_CHECK_SETTINGS = 1
-                        resolvable.startResolutionForResult(MainActivity.this, 1);
-                    } catch (IntentSender.SendIntentException sendEx) {
-                        // Ignore the error.
-                    }
-                }
-            }
-        });
-
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, f, locationListener);
+
+//        createLocationRequest();
+//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+//                .addLocationRequest(locationRequest);
+//        SettingsClient client = LocationServices.getSettingsClient(this);
+//        Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
+//        task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+//            @Override
+//            public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+//                // All location settings are satisfied. The client can initialize
+//                // location requests here.
+//                // ...
+//                //locationSettingsResponse.getLocationSettingsStates().
+//            }
+//        });
+//
+//        task.addOnFailureListener(this, new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                if (e instanceof ResolvableApiException) {
+//                    // Location settings are not satisfied, but this can be fixed
+//                    // by showing the user a dialog.
+//                    try {
+//                        // Show the dialog by calling startResolutionForResult(),
+//                        // and check the result in onActivityResult().
+//                        ResolvableApiException resolvable = (ResolvableApiException) e;
+//                        // REQUEST_CHECK_SETTINGS = 1
+//                        resolvable.startResolutionForResult(MainActivity.this, 1);
+//                    } catch (IntentSender.SendIntentException sendEx) {
+//                        // Ignore the error.
+//                    }
+//                }
+//            }
+//        });
+
     }
 
     /* updating the status of the shuttle.

@@ -1,6 +1,7 @@
 package com.example.getshuttlelocationforreal;
 
 import android.Manifest;
+import android.app.Service;
 import android.content.Context;
 import android.content.IntentSender;
 import android.location.Criteria;
@@ -10,6 +11,8 @@ import android.location.LocationManager;
 //import android.support.v4.app.ActivityCompat;
 //import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,9 +59,24 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.Math;
 
+
+import android.Manifest;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+
 import static java.lang.Math.pow;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
     LocationRequest locationRequest;
     protected void createLocationRequest() {
         locationRequest = LocationRequest.create();
@@ -115,23 +133,25 @@ public class MainActivity extends AppCompatActivity {
 
         TextView text = (TextView)findViewById(R.id.text);
 
+        startService(new Intent(getApplicationContext(), MyLocationService.class));
+
 //        Intent intent = getIntent();
 //        numOfShuttle = intent.getStringExtra("NumOfShuttle");
 //        text.setText(numOfShuttle);
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+/*        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String emailOfShuttle = user.getEmail();
             numOfShuttle = emailOfShuttle.split("@")[0];
         } else {
 // No user is signed in.
-        }
+        }*/
 //        AuthenticationPagerAdapter pagerAdapter = new AuthenticationPagerAdapter(getSupportFragmentManager());
 //        pagerAdapter.addFragmet(new LoginFragment());
 //        pagerAdapter.addFragmet(new RegisterFragment());
 //        viewPager.setAdapter(pagerAdapter);
 
 
-        final LocationListener locationListener = new LocationListener() {
+    /*   final LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(android.location.Location location) {
                 double latitude = location.getLatitude();
@@ -165,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         float f = (float) 0.5;
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, f, locationListener);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, f, locationListener);*/
 
 //        createLocationRequest();
 //        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -239,4 +259,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(),LoginActivity.class));
         finish();
     }
+
+
+
+
+
 }

@@ -17,16 +17,18 @@ import com.google.firebase.database.FirebaseDatabase;
 import static java.lang.Math.pow;
 
 public class MyLocationService extends Service {
-    DatabaseReference myRef;
-    String numOfShuttle;
+    private DatabaseReference myRef;
+    private String numOfShuttle;
     private Boolean status = false;
-    FirebaseDatabase db;
-    double minDis = 0.5;
+    private FirebaseDatabase db;
+    private double minDis = 0.5;
 
+    // todo - change first and last station coordinates
     //private static final double FIRST_STOP_LAT = 32.0727493;
     //private static final double FIRST_STOP_LON = 34.849301;
     //private static final double LAST_STOP_LAT = 32.072267499999995;
     //private static final double LAST_STOP_LON = 34.8480397;
+
     //31.786266,35.297893
     // "31.786342667022506, 35.29741737647691" - laurens house
     // 31.78626115987331, 35.29813167304606 - by the compyter in my room
@@ -118,23 +120,25 @@ public class MyLocationService extends Service {
     public void writeToDB(double latitude, double longitude) {
         updateStatus(latitude,longitude);
         myRef = db.getReference(numOfShuttle);
-        myRef.setValue(Double.toString(latitude) + ", " + Double.toString(longitude) + ", " + Boolean.toString(status));
+        myRef.setValue(latitude + ", " + longitude + ", " + status);
     }
 
-    /* updating the status of the shuttle.
-    checking weather the shuttle came in close proximity of the last stop
-    or if the shuttle left the proximity of the first stop
-    the radios that was chosen was - 5m (hopefully that's correct)
-    */
+    /**
+     *  updating the status of the shuttle.
+     *  checking weather the shuttle came in close proximity of the last stop
+     *  or if the shuttle left the proximity of the first stop
+     *  the radios that was chosen was - 5m (hopefully that's correct)
+     *
+     *  inCircle =  pow(latitude - FIRST_STOP_LAT,2) + pow(longitude - FIRST_STOP_LON,2) <= SQUARED_RADIOS;
+     *  using d^2 < r^2 to determine if the shuttle is in the surrounding of the station
+     * @param latitude
+     * @param longitude
+     */
     public void updateStatus(double latitude, double longitude) {
-        // using d^2 < r^2 to determine if the shuttle is in the surrounding of the station
-        //Boolean inCircle = ;
-        // came to last stop
+        //came to last stop
         if (this.status && (pow(latitude - LAST_STOP_LAT, 2) + pow(longitude - LAST_STOP_LON, 2) <= SQUARED_RADIOS)) {
             this.status = false;
-            return;
         }
-        //inCircle =  pow(latitude - FIRST_STOP_LAT,2) + pow(longitude - FIRST_STOP_LON,2) <= SQUARED_RADIOS;
         // leaving first stop
         else if (!this.status && (pow(latitude - FIRST_STOP_LAT, 2) + pow(longitude - FIRST_STOP_LON, 2) <= SQUARED_RADIOS)) {
             this.status = true;

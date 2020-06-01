@@ -17,11 +17,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import static java.lang.Math.pow;
 
 public class MyLocationService extends Service {
-    private DatabaseReference myRef;
+    private FirebaseDatabase db=FirebaseDatabase.getInstance();
+    private DatabaseReference myRef=db.getReference("shuttles");
     private String numOfShuttle;
     private Boolean status = false;
-    private FirebaseDatabase db;
+
     private double minDis = 0.5;
+
 
     // todo - change first and last station coordinates
     //private static final double FIRST_STOP_LAT = 32.0727493;
@@ -43,11 +45,18 @@ public class MyLocationService extends Service {
 //    private static final double SQUARED_RADIOS = 0.000000000673;
 //    private Boolean status = false;
 
-    // noam's house
-    private static final double FIRST_STOP_LAT = 32.0782038529416;
-    private static final double FIRST_STOP_LON = 34.84960211717887;
-    private static final double LAST_STOP_LAT = 32.07831045222022;
-    private static final double LAST_STOP_LON = 34.84849725022398;
+//    // noam's house
+//    private static final double FIRST_STOP_LAT = 32.0782038529416;
+//    private static final double FIRST_STOP_LON = 34.84960211717887;
+//    private static final double LAST_STOP_LAT = 32.07831045222022;
+//    private static final double LAST_STOP_LON = 34.84849725022398;
+//    private static final double SQUARED_RADIOS = 0.000000104329;
+
+    // hapardes and end hatzmaut
+    private static final double FIRST_STOP_LAT = 32.076458;
+    private static final double FIRST_STOP_LON = 34.874041;
+    private static final double LAST_STOP_LAT = 32.074879;
+    private static final double LAST_STOP_LON = 34.868378;
     private static final double SQUARED_RADIOS = 0.000000104329;
 
     @Override
@@ -119,8 +128,11 @@ public class MyLocationService extends Service {
 
     public void writeToDB(double latitude, double longitude) {
         updateStatus(latitude,longitude);
-        myRef = db.getReference(numOfShuttle);
-        myRef.setValue(latitude + ", " + longitude + ", " + status);
+        myRef.child(numOfShuttle).setValue(latitude + ", " + longitude + ", " + status);
+
+//        updateStatus(latitude,longitude);
+//        myRef = db.getReference(numOfShuttle);
+//        myRef.setValue(latitude + ", " + longitude + ", " + status);
     }
 
     /**

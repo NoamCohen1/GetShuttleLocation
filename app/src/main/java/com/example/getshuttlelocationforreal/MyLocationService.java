@@ -24,7 +24,6 @@ public class MyLocationService extends Service {
 
     private double minDis = 5;
 
-
     // todo - change first and last station coordinates
     //private static final double FIRST_STOP_LAT = 32.0727493;
     //private static final double FIRST_STOP_LON = 34.849301;

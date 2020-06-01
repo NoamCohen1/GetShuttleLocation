@@ -128,7 +128,7 @@ public class MyLocationService extends Service {
 
     public void writeToDB(double latitude, double longitude) {
         updateStatus(latitude,longitude);
-        myRef.child(numOfShuttle).setValue(latitude + ", " + longitude + ", " + status);
+            myRef.child(numOfShuttle).setValue(latitude + "," + longitude + "," + status);
 
 //        updateStatus(latitude,longitude);
 //        myRef = db.getReference(numOfShuttle);

@@ -22,7 +22,7 @@ public class MyLocationService extends Service {
     private String numOfShuttle;
     private Boolean status = false;
 
-    private double minDis = 0.5;
+    private double minDis = 5;
 
 
     // todo - change first and last station coordinates

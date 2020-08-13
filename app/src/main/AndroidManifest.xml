@@ -3,11 +3,9 @@
     package="com.example.getshuttlelocationforreal">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-<!--    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.location.gps" />
-<!--    <uses-feature android:name="android.hardware.location.network" />-->
 
     <application
         android:allowBackup="true"
@@ -27,15 +25,7 @@
 
         </activity>
         <activity android:name=".MainActivity"/>
-<!--        <activity-->
-<!--            android:name=".MainActivity"-->
-<!--            android:theme="@style/AppTheme.NoActionBar">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
         <service android:enabled="true" android:name=".MyLocationService" />
     </application>
 
